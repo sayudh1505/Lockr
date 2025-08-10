@@ -1,0 +1,60 @@
+name: kyc_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5
+  get: ^4.7.2
+  google_fonts: ^6.3.0
+  carousel_slider: ^5.1.1
+  cached_network_image: ^3.4.1
+  flutter_easyloading: ^3.0.5
+
+  image_picker: ^1.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/navback.png
+    - assets/img1.jpg
+    - assets/aadhaar.png
+    - assets/pan.png  
+    - assets/others.png
+    - assets/birthcertificate.png  
+    - assets/doc.png  
+    - assets/income-certificate.jpg  
+    - assets/vregistration.jpg 
+    - assets/mainscreen.png     
+    
+
+
+fonts:
+    - family: Lato
+      fonts:
+        - asset: fonts/Lato-Regular.ttf
+    - family: Lato
+      fonts:
+        - asset: fonts/Lato-Thin.ttf
+    - family: Lato
+      fonts:
+        - asset: fonts/p1.ttf
+    - family: Lato
+      fonts:
+        - asset: fonts/p2.ttf
+    - family: Lato
+      fonts:
+        - asset: fonts/p3.ttf
