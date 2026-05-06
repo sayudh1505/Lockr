@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lockr - Password Manager</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <!-- Auth Wrapper -->
+    <div class="auth-wrapper" id="authWrapper">
+      <div class="auth-container">
+        <div class="auth-header">
+          <div class="logo" style="justify-content: center; margin-bottom: 24px;">
+            <i class="ph-fill ph-lock-key"></i> Lockr
+          </div>
+          <h2 id="authTitle">Welcome Back</h2>
+          <p id="authSubtitle" style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Please enter your details to sign in.</p>
+        </div>
+        
+        <form id="authForm" class="auth-form" style="display: flex; flex-direction: column; gap: 20px; margin-top: 32px;">
+          <div class="form-group" id="authNameGroup" style="display: none;">
+            <label style="font-size: 14px; font-weight: 500;">Name</label>
+            <div class="input-with-icon">
+              <i class="ph ph-user"></i>
+              <input type="text" id="authName" placeholder="Enter your name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 14px; font-weight: 500;">Email</label>
+            <div class="input-with-icon">
+              <i class="ph ph-envelope-simple"></i>
+              <input type="email" id="authEmail" placeholder="Enter your email" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label style="font-size: 14px; font-weight: 500;">Password</label>
+            <div class="input-with-icon">
+              <i class="ph ph-lock-key"></i>
+              <input type="password" id="authPassword" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle-btn" id="authPasswordToggleBtn" aria-label="Toggle password visibility">
+                <i class="ph ph-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <p id="authError" style="color: #ef4444; font-size: 14px; display: none; text-align: center; margin-top: -8px;"></p>
+          
+          <button type="submit" class="btn-primary" id="authSubmitBtn" style="margin-top: 8px;">Sign In</button>
+        </form>
+        
+        <div class="auth-footer" style="margin-top: 24px; text-align: center; font-size: 15px; color: var(--text-secondary);">
+          <p id="authToggleText">Don't have an account? <span id="authToggleBtn" style="color: var(--primary-blue); font-weight: 600; cursor: pointer;">Sign up</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-wrapper" id="appWrapper" style="display: none;">
+      
+      <!-- Sidebar / Navigation -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="ph-fill ph-lock-key"></i>
+          <span>Lockr</span>
+        </div>
+        
+        <nav class="nav-links">
+          <button class="nav-item active" aria-label="Dashboard">
+            <i class="ph ph-squares-four"></i>
+            <span class="nav-label">Dashboard</span>
+          </button>
+          <button class="nav-item" aria-label="Security">
+            <i class="ph ph-shield"></i>
+            <span class="nav-label">Security</span>
+          </button>
+          <button class="nav-item" aria-label="Generator">
+            <i class="ph ph-password"></i>
+            <span class="nav-label">Generator</span>
+          </button>
+          <button class="nav-item" aria-label="Settings">
+            <i class="ph ph-gear"></i>
+            <span class="nav-label">Settings</span>
+          </button>
+        </nav>
+
+        <button class="fab" id="openAddModalBtn" aria-label="Add New">
+          <i class="ph ph-plus"></i>
+          <span class="fab-label">Add Password</span>
+        </button>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        
+        <!-- Header -->
+        <header class="header">
+          <div class="greeting-info">
+            <h1 class="greeting" id="dashboardGreeting">Hello, User</h1>
+            <p class="subtitle">Good morning</p>
+          </div>
+          
+          <div class="header-right">
+            <div class="search-bar">
+              <i class="ph ph-magnifying-glass"></i>
+              <input type="text" id="mainSearchInput" placeholder="Search Password">
+            </div>
+            <button class="icon-button" aria-label="Notifications">
+              <i class="ph ph-bell"></i>
+            </button>
+            <div class="profile-dropdown" style="position: relative;">
+              <div class="avatar" id="userAvatar" style="cursor: pointer;">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=e2e8f0" alt="User">
+              </div>
+              <!-- Dropdown Menu -->
+              <div id="profileMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 120%; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 8px; width: 160px; z-index: 100;">
+                <button id="logoutBtn" style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 12px; border: none; background: none; color: #ef4444; font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: background 0.2s;">
+                  <i class="ph ph-sign-out" style="font-size: 18px;"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Categories Section -->
+<section class="categories">
+  <h2 class="section-title">Category</h2>
+  <div class="category-grid">
+    <div class="category-card blue">
+      <div class="category-icon">
+        <i class="ph ph-cube"></i>
+      </div>
+      <div class="category-details">
+        <h3>All Passwords</h3>
+        <p>124 items</p>
+      </div>
+    </div>
+
+    <!-- Personal moved before Browsing -->
+    <div class="category-card yellow">
+      <div class="category-icon">
+        <i class="ph ph-user"></i>
+      </div>
+      <div class="category-details">
+        <h3>Personal</h3>
+        <p>0 items</p>
+      </div>
+    </div>
+
+    <div class="category-card green">
+      <div class="category-icon">
+        <i class="ph ph-compass"></i>
+      </div>
+      <div class="category-details">
+        <h3>Browsing</h3>
+        <p>42 items</p>
+      </div>
+    </div>
+
+    <div class="category-card pink">
+      <div class="category-icon">
+        <i class="ph ph-credit-card"></i>
+      </div>
+      <div class="category-details">
+        <h3>Payments</h3>
+        <p>12 items</p>
+      </div>
+    </div>
+  </div>
+</section>
+        <!-- Qucik Access Section -->
+        <section class="recent">
+          <h2 class="section-title">Qucik Access</h2>
+          <div class="password-list">
+            <!-- Google -->
+            <div class="password-item">
+              <div class="service-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Google Account</h3>
+                <p class="service-email">rahulornob@gmail.com</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Personal</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+            
+            <!-- Netflix -->
+            <div class="password-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 111 30" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M105.06233,14.2806261 L110.999156,30 C109.249227,29.7497422 107.500234,29.4366857 105.718437,29.1554972 L102.374168,20.4686475 L98.9371075,28.4375293 C97.2499766,28.1563408 95.5928391,28.061674 93.9057081,27.8439626 L99.9373627,14.0931671 L94.2502011,0 L100.281856,0 L102.59372,6.1246473 L104.905584,0 L110.999156,0 L105.06233,14.2806261 Z M90.4686475,0 L84.8749544,0 L84.8749544,26.8438332 C86.7501063,26.968846 88.6252583,27.1875416 90.4686475,27.3438258 L90.4686475,0 Z M81.9055207,26.4688478 C79.7492244,26.2813525 77.5629167,26.0311409 75.4066203,25.8436456 L75.4066203,0 L81.9055207,0 L81.9055207,26.4688478 Z M67.8123284,10.0310243 L67.8123284,14.7185011 L73.4994899,14.7185011 L73.4994899,20.0308709 L67.8123284,20.0308709 L67.8123284,25.3121516 C65.9371765,25.0934401 64.0933758,24.8747287 62.2495751,24.624471 L62.2495751,0 L74.0619864,0 L74.0619864,5.3123844 L67.8123284,5.3123844 L67.8123284,10.0310243 Z M52.5621453,23.312211 L52.5621453,5.3123844 L47.4684183,5.3123844 L47.4684183,0 L63.2808466,0 L63.2808466,5.3123844 L58.1871195,5.3123844 L58.1871195,23.9684784 C56.3119676,23.7809831 54.4368157,23.5622717 52.5621453,23.312211 Z M42.0620785,10.0310243 L42.0620785,14.7185011 L47.7492401,14.7185011 L47.7492401,20.0308709 L42.0620785,20.0308709 L42.0620785,22.3123307 C40.1869266,22.0936192 38.343126,21.8749078 36.4993252,21.6246501 L36.4993252,0 L48.3117366,0 L48.3117366,5.3123844 L42.0620785,5.3123844 L42.0620785,10.0310243 Z M24.3121115,20.1558669 L24.3121115,0 L30.2489379,0 L30.2489379,20.9370868 C28.2490216,20.7183754 26.2804535,20.4371868 24.3121115,20.1558669 Z M10.5936494,8.5936306 L10.5936494,18.0621367 C8.65620921,17.7496466 6.74998708,17.4371565 4.81254689,17.0621682 L4.81254689,0 L10.0624177,0 L20.3121703,13.7806411 L20.3121703,0 L25.9370425,0 L25.9370425,19.6871318 C23.8745582,19.4684204 21.8120739,19.1872318 19.8121576,18.9060433 L10.5936494,8.5936306 Z" fill="#E50914"></path></svg>
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Netflix Personal</h3>
+                <p class="service-email">rahulornob@gmail.com</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Entertainment</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+
+            <!-- Twitter -->
+            <div class="password-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z" fill="#1DA1F2"></path></svg>
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Twitter</h3>
+                <p class="service-email">rahulornob</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Social</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+
+            <!-- Dribbble -->
+            <div class="password-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zM12 2.182c-5.414 0-9.818 4.404-9.818 9.818 0 1.547.362 3.007 1 4.296C4.42 13.882 7.74 12.35 11.4 12.11c-.08-.344-.162-.686-.25-1.026C6.732 12.296 3.01 12.188 2.294 12.14c.732-2.31 2.193-4.254 4.103-5.5 1.503.784 3.758 1.77 6.463 2.126.657-1.393 1.405-2.784 2.164-4.084C13.284 3.045 10.637 2.182 12 2.182zm8.796 6.804c-.395-.125-2.607-.798-5.367-.406.495.733.957 1.492 1.392 2.27 3.05.518 5.253 1.838 5.437 1.956-.376-1.428-1.085-2.73-2.023-3.82H19.23c.536.002 1.074.004 1.566.002zM19.782 15.688c-.28-.184-2.868-1.84-6.388-2.317-.035.093-.072.187-.11.282-1.01 2.518-2.292 4.908-3.665 6.643 1.472.54 3.064.84 4.73.84 2.155 0 4.148-.696 5.786-1.874-.01-.11-.082-.876-.353-3.574zm-14.73 3.864c1.656-2.054 3.12-4.8 4.215-7.585-4.08.232-7.525 1.83-7.905 2.01 1.05 2.455 2.925 4.49 5.308 5.575H6.67c-1.002.002-1.004.004-1.62.002z" fill="#ea4c89"></path></svg>
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Dribbble Pro</h3>
+                <p class="service-email">rahulornob@gmail.com</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Work</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+            
+             <!-- Github -->
+             <div class="password-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.285 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" fill="#181717"></path></svg>
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Github</h3>
+                <p class="service-email">rahulornob</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Development</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+            
+            <!-- Apple -->
+             <div class="password-item">
+              <div class="service-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="#000000"></path></svg>
+              </div>
+              <div class="service-info">
+                <h3 class="service-name">Apple ID</h3>
+                <p class="service-email">rahulornob@icloud.com</p>
+              </div>
+              <div class="service-meta">
+                <span class="badge">Personal</span>
+              </div>
+              <button class="copy-button" aria-label="Copy Password">
+                <i class="ph ph-copy"></i>
+              </button>
+            </div>
+            
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- List Passwords Modal -->
+    <div class="modal-overlay" id="listModalOverlay">
+      <div class="modal-container" style="max-width: 600px;">
+        <div class="modal-header-handle"></div>
+        <button class="modal-close" id="closeListModalBtn" aria-label="Close modal">
+          <i class="ph ph-x"></i>
+        </button>
+        <h3 class="modal-site-title" id="listModalTitle">All Passwords</h3>
+        
+        <div class="modal-search">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="listModalSearch" placeholder="Search passwords...">
+        </div>
+        
+        <div class="password-list" id="modalPasswordList" style="max-height: 400px; overflow-y: auto; padding-right: 8px;">
+          <!-- Items will be injected here by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Password Modal -->
+    <div class="modal-overlay" id="addModalOverlay">
+      <div class="modal-container">
+        <div class="modal-header-handle"></div>
+        <button class="modal-close" id="closeAddModalBtn" aria-label="Close modal">
+          <i class="ph ph-x"></i>
+        </button>
+
+        <div class="modal-search">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="addSiteName" placeholder="Enter website or app name">
+        </div>
+
+        <form class="add-password-form" id="addPasswordForm">
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-with-icon">
+              <i class="ph ph-user"></i>
+              <input type="text" id="addUsername" placeholder="Enter Username">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>E-mail</label>
+            <div class="input-with-icon">
+              <i class="ph ph-envelope-simple"></i>
+              <input type="email" id="addEmail" placeholder="Enter Email">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Category</label>
+            <div class="input-with-icon">
+              <i class="ph ph-folder"></i>
+              <select id="addCategory" style="border: none; background: none; font-size: 16px; width: 100%; flex-grow: 1; color: var(--text-primary); outline: none; font-family: inherit; cursor: pointer;">
+                <option value="Personal">Personal</option>
+                <option value="Browsing">Browsing</option>
+                <option value="Payments">Payments</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-with-icon">
+              <i class="ph ph-lock-key"></i>
+              <input type="password" id="addPassword" placeholder="Enter Password">
+              <button type="button" class="password-toggle-btn" id="addPasswordToggleBtn" aria-label="Toggle password visibility">
+                <i class="ph ph-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button type="submit" class="btn-primary" style="margin-top: 0; flex-grow: 1;">Ok Done</button>
+            <button type="button" id="deletePasswordBtn" style="display: none; background: #fee2e2; color: #ef4444; border: none; border-radius: 16px; padding: 0 20px; font-size: 24px; cursor: pointer; transition: background 0.2s;" aria-label="Delete password">
+              <i class="ph ph-trash"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Master Password Modal -->
+    <div class="modal-overlay" id="masterPasswordModalOverlay">
+      <div class="modal-container" style="max-width: 400px; text-align: center;">
+        <div class="modal-header-handle"></div>
+        <button class="modal-close" id="closeMasterModalBtn" aria-label="Close modal">
+          <i class="ph ph-x"></i>
+        </button>
+        
+        <h3 style="font-size: 22px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Master Password</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 14px;">Please enter your master password to view this entry.</p>
+
+        <form id="masterPasswordForm" style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="input-with-icon" style="text-align: left;">
+            <i class="ph ph-lock-key"></i>
+            <input type="password" id="masterPasswordInput" placeholder="Enter master password" required>
+            <button type="button" id="toggleMasterPasswordBtn" class="password-toggle-btn" aria-label="Toggle password visibility">
+              <i class="ph ph-eye"></i>
+            </button>
+          </div>
+          <p id="masterPasswordError" style="color: #ef4444; font-size: 14px; display: none; text-align: left; margin-top: -8px;">Incorrect password.</p>
+          <button type="submit" class="btn-primary" style="margin-top: 8px;">Unlock</button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
